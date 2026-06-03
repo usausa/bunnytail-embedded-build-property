@@ -122,7 +122,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var nameEnd = source.IndexOf('=');
         if (nameEnd <= 0)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueName, null, string.Empty));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueName, (Location?)null));
             return false;
         }
 
@@ -132,7 +132,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var typeEnd = afterName.IndexOf(':');
         if (typeEnd <= 0)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueType, null, string.Empty));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueType, (Location?)null));
             return false;
         }
 
