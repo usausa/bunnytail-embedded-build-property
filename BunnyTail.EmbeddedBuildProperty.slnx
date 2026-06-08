@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/Example/">
+    <Project Path="Develop/Develop.csproj" />
+  </Folder>
+  <Folder Name="/Library/">
+    <Project Path="BunnyTail.EmbeddedBuildProperty.Generator/BunnyTail.EmbeddedBuildProperty.Generator.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
@@ -14,6 +20,4 @@
     <File Path="README.md" />
     <File Path="test.runsettings" />
   </Folder>
-  <Project Path="BunnyTail.EmbeddedBuildProperty.Generator/BunnyTail.EmbeddedBuildProperty.Generator.csproj" />
-  <Project Path="Develop/Develop.csproj" />
 </Solution>
