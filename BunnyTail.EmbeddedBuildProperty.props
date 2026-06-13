@@ -1,8 +1,6 @@
 <Project>
 
   <ItemGroup>
-    <CompilerVisibleProperty Include="EmbeddedBuildProperty" />
-
     <CompilerVisibleProperty Include="EmbeddedPropertyClass" />
     <CompilerVisibleProperty Include="_EmbeddedPropertyValues" />
   </ItemGroup>

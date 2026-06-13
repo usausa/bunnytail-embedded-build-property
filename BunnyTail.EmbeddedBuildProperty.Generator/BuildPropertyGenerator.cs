@@ -31,7 +31,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
                 values ?? string.Empty);
         });
 
-        context.RegisterImplementationSourceOutput(
+        context.RegisterSourceOutput(
             model,
             Execute);
     }
@@ -166,6 +166,11 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
             }
 
             sb.Append(c);
+        }
+
+        if (escape)
+        {
+            sb.Append('\\');
         }
 
         source = source.Slice(nameEnd + 1 + typeEnd + 1 + i).TrimStart();
