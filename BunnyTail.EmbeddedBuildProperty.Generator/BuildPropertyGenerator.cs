@@ -51,13 +51,13 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
 
         if (!String.IsNullOrEmpty(model.Namespace) && !IsValidNamespace(model.Namespace))
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidNamespace, (Location?)null, [model.Namespace]));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidNamespace, (Location?)null, model.Namespace));
             return;
         }
 
         if (!IsValidName(model.ClassName))
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidClassName, (Location?)null, [model.ClassName]));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidClassName, (Location?)null, model.ClassName));
             return;
         }
 
@@ -102,25 +102,25 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
 
             if (!IsValidName(name))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstName, (Location?)null, [name]));
+                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstName, (Location?)null, name));
                 continue;
             }
 
             if (!IsSupportedType(type))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.UnsupportedConstType, (Location?)null, [type, name]));
+                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.UnsupportedConstType, (Location?)null, type, name));
                 continue;
             }
 
             if ((type != "string") && String.IsNullOrEmpty(value))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.EmptyConstValue, (Location?)null, [name, type]));
+                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.EmptyConstValue, (Location?)null, name, type));
                 continue;
             }
 
             if (!names.Add(name))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.DuplicateConstName, (Location?)null, [name]));
+                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.DuplicateConstName, (Location?)null, name));
                 continue;
             }
 
@@ -206,7 +206,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var nameEnd = segment.IndexOf('=');
         if (nameEnd <= 0)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueName, (Location?)null, [segment]));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueName, (Location?)null, segment));
             return false;
         }
 
@@ -214,7 +214,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var typeEnd = segment.IndexOf(':', typeStart);
         if (typeEnd <= typeStart)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueType, (Location?)null, [segment]));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueType, (Location?)null, segment));
             return false;
         }
 
