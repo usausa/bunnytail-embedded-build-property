@@ -15,6 +15,7 @@
   <PropertyGroup>
     <EmbeddedValue1>xyx</EmbeddedValue1>
     <EmbeddedValue2>123</EmbeddedValue2>
+    <EmbeddedValue3>789</EmbeddedValue3>
 
     <!-- Debug -->
     <EmbeddedBuildProperty>Flavor=Free,SecretKey=12345678,Code=123,Flag=true</EmbeddedBuildProperty>
