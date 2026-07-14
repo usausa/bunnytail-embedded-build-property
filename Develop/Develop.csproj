@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SourceGenerateHelper" Version="1.14.0" GeneratePathProperty="true" PrivateAssets="all" />
+    <PackageReference Include="SourceGenerateHelper" Version="1.16.0" GeneratePathProperty="true" PrivateAssets="all" />
     <Analyzer Include="$(PKGSourceGenerateHelper)\lib\netstandard2.0\SourceGenerateHelper.dll" />
   </ItemGroup>
 
