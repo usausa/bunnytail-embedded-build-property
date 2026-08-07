@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/Example/">
-    <Project Path="Develop/Develop.csproj" />
+    <Project Path="Develop/Develop.csproj" DefaultStartup="true" />
   </Folder>
   <Folder Name="/Library/">
     <Project Path="BunnyTail.EmbeddedBuildProperty.Generator/BunnyTail.EmbeddedBuildProperty.Generator.csproj" />
