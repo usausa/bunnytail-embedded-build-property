@@ -2,6 +2,7 @@ namespace BunnyTail.EmbeddedBuildProperty.Generator;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 using BunnyTail.EmbeddedBuildProperty.Generator.Models;
@@ -118,6 +119,12 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
                 continue;
             }
 
+            if (!TryFormatLiteral(type, value, out var literal))
+            {
+                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValue, (Location?)null, name, type, value));
+                continue;
+            }
+
             if (!names.Add(name))
             {
                 context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.DuplicateConstName, (Location?)null, name));
@@ -140,7 +147,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
                 .Append(' ')
                 .Append(name)
                 .Append(" = ")
-                .Append(FormatLiteral(type, value))
+                .Append(literal)
                 .Append(';')
                 .NewLine();
         }
@@ -206,7 +213,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var nameEnd = segment.IndexOf('=');
         if (nameEnd <= 0)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueName, (Location?)null, segment));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.NameSeparatorNotFound, (Location?)null, segment));
             return false;
         }
 
@@ -214,7 +221,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var typeEnd = segment.IndexOf(':', typeStart);
         if (typeEnd <= typeStart)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValueType, (Location?)null, segment));
+            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.TypeSeparatorNotFound, (Location?)null, segment));
             return false;
         }
 
@@ -258,23 +265,151 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
     // Literal
     // ------------------------------------------------------------
 
-    private static string FormatLiteral(string type, string value) => type switch
+    private static bool TryFormatLiteral(string type, string value, out string literal)
     {
-        "string" => $"@\"{value.Replace("\"", "\"\"")}\"",
-        "char" => $"'{value.Replace("\\", "\\\\").Replace("'", "\\'")}'",
-        "float" => HasSuffix(value, 'f', 'F') ? value : value + "f",
-        "decimal" => HasSuffix(value, 'm', 'M') ? value : value + "m",
-        _ => value
-    };
+        switch (type)
+        {
+            case "string":
+                literal = $"@\"{value.Replace("\"", "\"\"")}\"";
+                return true;
+            case "bool":
+                if (Boolean.TryParse(value, out var boolValue))
+                {
+                    literal = boolValue ? "true" : "false";
+                    return true;
+                }
+                break;
+            case "char":
+                if (value.Length == 1)
+                {
+                    literal = $"'{Escape(value[0])}'";
+                    return true;
+                }
+                break;
+            case "byte":
+                if (Byte.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var byteValue))
+                {
+                    literal = byteValue.ToString(CultureInfo.InvariantCulture);
+                    return true;
+                }
+                break;
+            case "sbyte":
+                if (SByte.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var sbyteValue))
+                {
+                    literal = sbyteValue.ToString(CultureInfo.InvariantCulture);
+                    return true;
+                }
+                break;
+            case "short":
+                if (Int16.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var shortValue))
+                {
+                    literal = shortValue.ToString(CultureInfo.InvariantCulture);
+                    return true;
+                }
+                break;
+            case "ushort":
+                if (UInt16.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ushortValue))
+                {
+                    literal = ushortValue.ToString(CultureInfo.InvariantCulture);
+                    return true;
+                }
+                break;
+            case "int":
+                if (Int32.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue))
+                {
+                    literal = intValue.ToString(CultureInfo.InvariantCulture);
+                    return true;
+                }
+                break;
+            case "uint":
+                if (UInt32.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var uintValue))
+                {
+                    literal = uintValue.ToString(CultureInfo.InvariantCulture) + "u";
+                    return true;
+                }
+                break;
+            case "long":
+                if (Int64.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var longValue))
+                {
+                    literal = longValue.ToString(CultureInfo.InvariantCulture) + "L";
+                    return true;
+                }
+                break;
+            case "ulong":
+                if (UInt64.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ulongValue))
+                {
+                    literal = ulongValue.ToString(CultureInfo.InvariantCulture) + "UL";
+                    return true;
+                }
+                break;
+            case "float":
+                return TryFormatFloat(value, out literal);
+            case "double":
+                return TryFormatDouble(value, out literal);
+            case "decimal":
+                return TryFormatDecimal(value, out literal);
+        }
 
-    private static bool HasSuffix(string value, char lower, char upper)
+        literal = string.Empty;
+        return false;
+    }
+
+    private static bool TryFormatFloat(string value, out string literal)
+    {
+        var body = TrimSuffix(value, 'f', 'F');
+        if (Single.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
+            !Single.IsNaN(parsed) && !Single.IsInfinity(parsed))
+        {
+            literal = body + "f";
+            return true;
+        }
+
+        literal = string.Empty;
+        return false;
+    }
+
+    private static bool TryFormatDouble(string value, out string literal)
+    {
+        var body = TrimSuffix(value, 'd', 'D');
+        if (Double.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
+            !Double.IsNaN(parsed) && !Double.IsInfinity(parsed))
+        {
+            literal = body + "d";
+            return true;
+        }
+
+        literal = string.Empty;
+        return false;
+    }
+
+    private static bool TryFormatDecimal(string value, out string literal)
+    {
+        var body = TrimSuffix(value, 'm', 'M');
+        if (Decimal.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+        {
+            literal = body + "m";
+            return true;
+        }
+
+        literal = string.Empty;
+        return false;
+    }
+
+    private static string TrimSuffix(string value, char lower, char upper)
     {
         if (value.Length == 0)
         {
-            return false;
+            return value;
         }
 
         var last = value[value.Length - 1];
-        return (last == lower) || (last == upper);
+        return ((last == lower) || (last == upper)) ? value.Substring(0, value.Length - 1) : value;
     }
+
+    private static string Escape(char value) => value switch
+    {
+        '\'' => "\\'",
+        '\\' => "\\\\",
+        _ => value.ToString()
+    };
 }
