@@ -11,7 +11,7 @@ internal static class Diagnostics
         title: "Invalid namespace",
         messageFormat: "Namespace is not valid. namespace=[{0}]",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor InvalidClassName { get; } = new(
@@ -19,7 +19,7 @@ internal static class Diagnostics
         title: "Invalid class name",
         messageFormat: "Class name is not a valid identifier. className=[{0}]",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
     // Entry

@@ -159,7 +159,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
     }
 
     // ------------------------------------------------------------
-    // Parse
+    // Parser
     // ------------------------------------------------------------
 
     private static bool TryReadSegment(ref ReadOnlySpan<char> source, out string segment)

@@ -28,6 +28,16 @@
     <PackageReference Include="SourceGenerateHelper" Version="1.18.0" GeneratePathProperty="true" PrivateAssets="all" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSourceGenerateHelper)\lib\netstandard2.0\SourceGenerateHelper.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="PackBuildOutputs" DependsOnTargets="SatelliteDllsProjectOutputGroup;DebugSymbolsProjectOutputGroup">
     <ItemGroup>
       <TfmSpecificPackageFile Include="..\BunnyTail.EmbeddedBuildProperty.props" PackagePath="build" />
