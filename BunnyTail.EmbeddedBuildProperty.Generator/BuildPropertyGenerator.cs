@@ -3,13 +3,11 @@ namespace BunnyTail.EmbeddedBuildProperty.Generator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 using BunnyTail.EmbeddedBuildProperty.Generator.Models;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 
 using SourceGenerateHelper;
 
@@ -154,8 +152,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
 
         builder.EndScope();
 
-        var source = builder.ToString();
-        context.AddSource("EmbeddedProperty.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource("EmbeddedProperty.g.cs", builder);
     }
 
     // ------------------------------------------------------------
