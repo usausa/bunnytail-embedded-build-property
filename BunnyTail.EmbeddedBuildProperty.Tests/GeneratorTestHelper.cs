@@ -10,8 +10,6 @@ using SourceGenerateHelper.Testing;
 
 internal static class GeneratorTestHelper
 {
-    // The generator reads MSBuild properties only; there is no user syntax to scan.
-    // A minimal compilation unit is enough to drive it.
     private const string EmptySource = "// no user code";
 
     private static GeneratorTestRunner CreateRunner(string? values, string? className = null, string? rootNamespace = null)

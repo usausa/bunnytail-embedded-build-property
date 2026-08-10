@@ -4,8 +4,6 @@ using Microsoft.CodeAnalysis;
 
 public class BuildPropertyGeneratorTest
 {
-    // Entry format is "Name=type:value", entries separated by ',' (backslash escapes a literal ',').
-
     //-----------------------------------------------------------------------
     // Basic
     //-----------------------------------------------------------------------
@@ -54,7 +52,7 @@ public class BuildPropertyGeneratorTest
     }
 
     //-----------------------------------------------------------------------
-    // BTBP1001 : invalid namespace
+    // Diagnostics
     //-----------------------------------------------------------------------
 
     [Fact]
@@ -65,10 +63,6 @@ public class BuildPropertyGeneratorTest
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1001");
     }
 
-    //-----------------------------------------------------------------------
-    // BTBP1002 : invalid class name
-    //-----------------------------------------------------------------------
-
     [Fact]
     public void Btbp1002InvalidClassNameEmitsDiagnostic()
     {
@@ -76,10 +70,6 @@ public class BuildPropertyGeneratorTest
 
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1002");
     }
-
-    //-----------------------------------------------------------------------
-    // BTBP1003 : '=' separator missing
-    //-----------------------------------------------------------------------
 
     [Fact]
     public void Btbp1003NameSeparatorMissingEmitsDiagnostic()
@@ -89,10 +79,6 @@ public class BuildPropertyGeneratorTest
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1003");
     }
 
-    //-----------------------------------------------------------------------
-    // BTBP1004 : ':' separator missing
-    //-----------------------------------------------------------------------
-
     [Fact]
     public void Btbp1004TypeSeparatorMissingEmitsDiagnostic()
     {
@@ -100,10 +86,6 @@ public class BuildPropertyGeneratorTest
 
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1004");
     }
-
-    //-----------------------------------------------------------------------
-    // BTBP1005 : invalid constant name
-    //-----------------------------------------------------------------------
 
     [Fact]
     public void Btbp1005InvalidConstNameEmitsDiagnostic()
@@ -113,10 +95,6 @@ public class BuildPropertyGeneratorTest
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1005");
     }
 
-    //-----------------------------------------------------------------------
-    // BTBP1006 : unsupported constant type
-    //-----------------------------------------------------------------------
-
     [Fact]
     public void Btbp1006UnsupportedTypeEmitsDiagnostic()
     {
@@ -124,10 +102,6 @@ public class BuildPropertyGeneratorTest
 
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1006");
     }
-
-    //-----------------------------------------------------------------------
-    // BTBP1007 : empty value for a non-string type
-    //-----------------------------------------------------------------------
 
     [Fact]
     public void Btbp1007EmptyValueEmitsDiagnostic()
@@ -145,10 +119,6 @@ public class BuildPropertyGeneratorTest
         Assert.Empty(diagnostics);
     }
 
-    //-----------------------------------------------------------------------
-    // BTBP1008 : value does not parse as the declared type
-    //-----------------------------------------------------------------------
-
     [Fact]
     public void Btbp1008InvalidValueEmitsDiagnostic()
     {
@@ -156,10 +126,6 @@ public class BuildPropertyGeneratorTest
 
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1008");
     }
-
-    //-----------------------------------------------------------------------
-    // BTBP1009 : duplicated constant name
-    //-----------------------------------------------------------------------
 
     [Fact]
     public void Btbp1009DuplicateNameEmitsDiagnostic()
