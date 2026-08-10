@@ -18,6 +18,6 @@
     <File Path="Directory.Build.targets" />
     <File Path="LICENSE" />
     <File Path="README.md" />
-    <File Path="test.runsettings" />
+    <File Path="CodeCoverage.runsettings" />
   </Folder>
 </Solution>
