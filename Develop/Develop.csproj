@@ -26,11 +26,11 @@
     </EmbeddedPropertyValues>
   </PropertyGroup>
 
-  <Import Project="..\BunnyTail.EmbeddedBuildProperty.props" />
-
   <ItemGroup>
     <ProjectReference Include="..\BunnyTail.EmbeddedBuildProperty.Generator\BunnyTail.EmbeddedBuildProperty.Generator.csproj" OutputItemType="analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <Import Project="..\BunnyTail.EmbeddedBuildProperty.targets" />
 
   <ItemGroup>
     <PackageReference Include="SourceGenerateHelper" Version="1.23.0" GeneratePathProperty="true" PrivateAssets="all" />
