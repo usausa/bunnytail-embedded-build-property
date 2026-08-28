@@ -1,7 +1,5 @@
 namespace BunnyTail.EmbeddedBuildProperty.Tests;
 
-using Microsoft.CodeAnalysis;
-
 public sealed class DiagnosticTest
 {
     [Fact]
