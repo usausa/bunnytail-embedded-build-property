@@ -43,6 +43,7 @@
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(TargetDir)\BunnyTail.EmbeddedBuildProperty.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
       <TfmSpecificPackageFile Include="$(PKGSourceGenerateHelper)\lib\netstandard2.0\SourceGenerateHelper.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+      <TfmSpecificPackageFile Include="..\BunnyTail.EmbeddedBuildProperty.props" Pack="true" PackagePath="buildTransitive\BunnyTail.EmbeddedBuildProperty.props" Visible="false" />
       <TfmSpecificPackageFile Include="..\BunnyTail.EmbeddedBuildProperty.targets" Pack="true" PackagePath="buildTransitive\BunnyTail.EmbeddedBuildProperty.targets" Visible="false" />
     </ItemGroup>
   </Target>
