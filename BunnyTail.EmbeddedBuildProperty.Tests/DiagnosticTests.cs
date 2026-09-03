@@ -1,6 +1,6 @@
 namespace BunnyTail.EmbeddedBuildProperty.Tests;
 
-public sealed class DiagnosticTest
+public sealed class DiagnosticTests
 {
     [Fact]
     public void Btbp1001InvalidNamespaceEmitsDiagnostic()

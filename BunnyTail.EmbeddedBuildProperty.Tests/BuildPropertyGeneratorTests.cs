@@ -2,7 +2,7 @@ namespace BunnyTail.EmbeddedBuildProperty.Tests;
 
 using Microsoft.CodeAnalysis;
 
-public class BuildPropertyGeneratorTest
+public class BuildPropertyGeneratorTests
 {
     //-----------------------------------------------------------------------
     // Basic
