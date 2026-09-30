@@ -357,7 +357,6 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         return false;
     }
 
-    // The literal is written from the parsed value, because the input (such as "5.") is not always a C# literal
     private static bool TryFormatFloat(string value, out string literal)
     {
         var body = TrimSuffix(value, 'f', 'F');
