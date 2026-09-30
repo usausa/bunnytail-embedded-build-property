@@ -1,5 +1,11 @@
 namespace BunnyTail.EmbeddedBuildProperty.Tests;
 
+using System.Reflection;
+
+using BunnyTail.EmbeddedBuildProperty.Generator;
+
+using Microsoft.CodeAnalysis;
+
 public sealed class DiagnosticTests
 {
     [Fact]
@@ -72,5 +78,27 @@ public sealed class DiagnosticTests
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=string:abc,Value1=string:xyz");
 
         Assert.Contains(diagnostics, static x => x.Id == "BTBP1009");
+    }
+
+    [Fact]
+    public void SameDiagnosticIsReportedOnce()
+    {
+        var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=int:notanumber,Value1=int:notanumber");
+
+        Assert.Single(diagnostics, static x => x.Id == "BTBP1008");
+    }
+
+    [Fact]
+    public void ErrorsCannotBeSuppressed()
+    {
+        var descriptors = typeof(BuildPropertyGenerator).Assembly.GetType("BunnyTail.EmbeddedBuildProperty.Generator.Diagnostics", throwOnError: true)!
+            .GetProperties(BindingFlags.Public | BindingFlags.Static)
+            .Where(static x => x.PropertyType == typeof(DiagnosticDescriptor))
+            .Select(static x => (DiagnosticDescriptor)x.GetValue(null)!)
+            .ToList();
+
+        Assert.All(
+            descriptors.Where(static x => x.DefaultSeverity == DiagnosticSeverity.Error),
+            static x => Assert.Equal([WellKnownDiagnosticTags.NotConfigurable, WellKnownDiagnosticTags.Compiler], x.CustomTags));
     }
 }

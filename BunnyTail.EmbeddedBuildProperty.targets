@@ -8,7 +8,7 @@
   <Target Name="ComputeEmbeddedPropertyValues"
           BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
     <PropertyGroup Condition="'$(EmbeddedPropertyValues)' != ''">
-      <_EmbeddedPropertyValues>$([System.Text.RegularExpressions.Regex]::Replace('$(EmbeddedPropertyValues)', '\r?\n\s*', ''))</_EmbeddedPropertyValues>
+      <_EmbeddedPropertyValues>$([System.Text.RegularExpressions.Regex]::Replace('$(EmbeddedPropertyValues)', '\r?\n\s*', '').Replace('%', '%2525').Replace('#', '%2523').Replace(';', '%253B'))</_EmbeddedPropertyValues>
     </PropertyGroup>
   </Target>
 

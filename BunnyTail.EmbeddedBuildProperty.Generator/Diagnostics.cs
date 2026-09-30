@@ -2,6 +2,8 @@ namespace BunnyTail.EmbeddedBuildProperty.Generator;
 
 using Microsoft.CodeAnalysis;
 
+using SourceGenerateHelper;
+
 internal static class Diagnostics
 {
     // Class
@@ -12,7 +14,8 @@ internal static class Diagnostics
         messageFormat: "Namespace is not valid. namespace=[{0}]",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
+        isEnabledByDefault: true,
+        customTags: DiagnosticTags.NotSuppressible);
 
     public static DiagnosticDescriptor InvalidClassName { get; } = new(
         id: "BTBP1002",
@@ -20,7 +23,8 @@ internal static class Diagnostics
         messageFormat: "Class name is not a valid identifier. className=[{0}]",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
+        isEnabledByDefault: true,
+        customTags: DiagnosticTags.NotSuppressible);
 
     // Entry
 

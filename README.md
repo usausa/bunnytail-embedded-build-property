@@ -13,7 +13,7 @@ Generate consts class to get build options.
 ```xml
   <PropertyGroup>
     <EmbeddedFlavor>Development</EmbeddedFlavor>
-    <EmbeddedSecretKey></EmbeddedFlavor>
+    <EmbeddedSecretKey></EmbeddedSecretKey>
   </PropertyGroup>
 
   <Import Project="..\.UserEmbeddedProperty.props" Condition="Exists('..\.UserEmbeddedProperty.props')" />
@@ -36,5 +36,5 @@ Console.WriteLine($"SecretKey: {EmbeddedProperty.SecretKey}");
 ### Build
 
 ```
-dotnet build Example.csproj /p:Flavor=Production /p:SecretKey=xxxx
+dotnet build Example.csproj /p:EmbeddedFlavor=Production /p:EmbeddedSecretKey=xxxx
 ```

@@ -44,4 +44,10 @@ internal static class GeneratorTestHelper
 
     public static string GetGeneratedSource(string? values, string? className = null, string? rootNamespace = null) =>
         CreateRunner(values, className, rootNamespace).GetGeneratedSource(EmptySource);
+
+    public static IReadOnlyList<string> GetProblemIds(string? values) =>
+        [.. CreateRunner(values).GetProblems(EmptySource).Select(static x => x.Id)];
+
+    public static GeneratorTestResult Run(string? values, string source) =>
+        CreateRunner(values).Run(source);
 }

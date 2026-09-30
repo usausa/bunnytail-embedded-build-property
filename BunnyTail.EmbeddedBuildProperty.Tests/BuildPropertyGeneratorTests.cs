@@ -44,6 +44,24 @@ public class BuildPropertyGeneratorTests
     }
 
     [Fact]
+    public void GeneratedClassIsInternalByDefault()
+    {
+        var result = GeneratorTestHelper.Run("Value1=string:abc", "// no user code");
+
+        Assert.Empty(result.Problems);
+        Assert.Equal(Accessibility.Internal, result.OutputCompilation.GetTypeByMetadataName("EmbeddedProperty")!.DeclaredAccessibility);
+    }
+
+    [Fact]
+    public void GeneratedClassFollowsUserAccessibility()
+    {
+        var result = GeneratorTestHelper.Run("Value1=string:abc", "public static partial class EmbeddedProperty { }");
+
+        Assert.Empty(result.Problems);
+        Assert.Equal(Accessibility.Public, result.OutputCompilation.GetTypeByMetadataName("EmbeddedProperty")!.DeclaredAccessibility);
+    }
+
+    [Fact]
     public void ValidDefinitionEmitsNoDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=string:abc,Value2=int:123,Value3=bool:true");
@@ -61,5 +79,32 @@ public class BuildPropertyGeneratorTests
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=string:");
 
         Assert.Empty(diagnostics);
+    }
+
+    //-----------------------------------------------------------------------
+    // Values
+    //-----------------------------------------------------------------------
+
+    [Fact]
+    public void EscapedCharactersAreRestored()
+    {
+        var generated = GeneratorTestHelper.GetGeneratedSource("Hash=string:a%23b,Semi=string:c%3Bd,Percent=string:e%25f");
+
+        Assert.Contains("Hash = @\"a#b\";", generated, StringComparison.Ordinal);
+        Assert.Contains("Semi = @\"c;d\";", generated, StringComparison.Ordinal);
+        Assert.Contains("Percent = @\"e%f\";", generated, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("Value=float:5.", "5f")]
+    [InlineData("Value=double:5.", "5d")]
+    [InlineData("Value=double:1e3", "1000d")]
+    [InlineData("Value=decimal:0.10", "0.10m")]
+    public void NumberIsWrittenAsLiteral(string values, string literal)
+    {
+        var generated = GeneratorTestHelper.GetGeneratedSource(values);
+
+        Assert.Empty(GeneratorTestHelper.GetProblemIds(values));
+        Assert.Contains("Value = " + literal + ";", generated, StringComparison.Ordinal);
     }
 }
