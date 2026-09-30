@@ -29,7 +29,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
             return new BuildPropertyModel(
                 ns ?? string.Empty,
                 String.IsNullOrEmpty(className) ? "EmbeddedProperty" : className!,
-                values ?? string.Empty);
+                Uri.UnescapeDataString(values ?? string.Empty));
         });
 
         context.RegisterSourceOutput(
@@ -76,13 +76,14 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         // class
         builder
             .Indent()
-            .Append("internal static partial class ")
+            .Append("static partial class ")
             .Append(model.ClassName)
             .NewLine();
         builder.BeginScope();
 
         var span = model.Values.AsSpan().Trim();
         var names = new HashSet<string>(StringComparer.Ordinal);
+        var diagnostics = new List<DiagnosticInfo>();
 
         var first = true;
         while (TryReadSegment(ref span, out var segment))
@@ -94,38 +95,38 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
                 continue;
             }
 
-            if (!TryParseEntry(context, segment, out var name, out var type, out var value))
+            if (!TryParseEntry(diagnostics, segment, out var name, out var type, out var value))
             {
                 continue;
             }
 
             if (!IsValidName(name))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstName, (Location?)null, name));
+                diagnostics.Add(new DiagnosticInfo(Diagnostics.InvalidConstName, (Location?)null, name));
                 continue;
             }
 
             if (!IsSupportedType(type))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.UnsupportedConstType, (Location?)null, type, name));
+                diagnostics.Add(new DiagnosticInfo(Diagnostics.UnsupportedConstType, (Location?)null, type, name));
                 continue;
             }
 
             if ((type != "string") && String.IsNullOrEmpty(value))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.EmptyConstValue, (Location?)null, name, type));
+                diagnostics.Add(new DiagnosticInfo(Diagnostics.EmptyConstValue, (Location?)null, name, type));
                 continue;
             }
 
             if (!TryFormatLiteral(type, value, out var literal))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.InvalidConstValue, (Location?)null, name, type, value));
+                diagnostics.Add(new DiagnosticInfo(Diagnostics.InvalidConstValue, (Location?)null, name, type, value));
                 continue;
             }
 
             if (!names.Add(name))
             {
-                context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.DuplicateConstName, (Location?)null, name));
+                diagnostics.Add(new DiagnosticInfo(Diagnostics.DuplicateConstName, (Location?)null, name));
                 continue;
             }
 
@@ -151,6 +152,11 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         }
 
         builder.EndScope();
+
+        foreach (var diagnostic in diagnostics.Distinct())
+        {
+            context.ReportDiagnostic(diagnostic);
+        }
 
         context.AddSource("EmbeddedProperty.g.cs", builder);
     }
@@ -201,7 +207,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         return true;
     }
 
-    private static bool TryParseEntry(SourceProductionContext context, string segment, out string name, out string type, out string value)
+    private static bool TryParseEntry(List<DiagnosticInfo> diagnostics, string segment, out string name, out string type, out string value)
     {
         name = string.Empty;
         type = string.Empty;
@@ -210,7 +216,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var nameEnd = segment.IndexOf('=');
         if (nameEnd <= 0)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.NameSeparatorNotFound, (Location?)null, segment));
+            diagnostics.Add(new DiagnosticInfo(Diagnostics.NameSeparatorNotFound, (Location?)null, segment));
             return false;
         }
 
@@ -218,7 +224,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         var typeEnd = segment.IndexOf(':', typeStart);
         if (typeEnd <= typeStart)
         {
-            context.ReportDiagnostic(new DiagnosticInfo(Diagnostics.TypeSeparatorNotFound, (Location?)null, segment));
+            diagnostics.Add(new DiagnosticInfo(Diagnostics.TypeSeparatorNotFound, (Location?)null, segment));
             return false;
         }
 
@@ -351,13 +357,14 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         return false;
     }
 
+    // The literal is written from the parsed value, because the input (such as "5.") is not always a C# literal
     private static bool TryFormatFloat(string value, out string literal)
     {
         var body = TrimSuffix(value, 'f', 'F');
         if (Single.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
             !Single.IsNaN(parsed) && !Single.IsInfinity(parsed))
         {
-            literal = body + "f";
+            literal = CSharpLiteral.Format(parsed)!;
             return true;
         }
 
@@ -371,7 +378,7 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
         if (Double.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
             !Double.IsNaN(parsed) && !Double.IsInfinity(parsed))
         {
-            literal = body + "d";
+            literal = CSharpLiteral.Format(parsed)!;
             return true;
         }
 
@@ -382,9 +389,9 @@ public sealed class BuildPropertyGenerator : IIncrementalGenerator
     private static bool TryFormatDecimal(string value, out string literal)
     {
         var body = TrimSuffix(value, 'm', 'M');
-        if (Decimal.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+        if (Decimal.TryParse(body, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
         {
-            literal = body + "m";
+            literal = CSharpLiteral.Format(parsed)!;
             return true;
         }
 
