@@ -8,84 +8,96 @@ using Microsoft.CodeAnalysis;
 
 public sealed class DiagnosticTests
 {
+    // ------------------------------------------------------------
+    // Class (00xx)
+    // ------------------------------------------------------------
+
     [Fact]
-    public void Btbp1001InvalidNamespaceEmitsDiagnostic()
+    public void Btbp0001InvalidNamespaceEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=string:abc", rootNamespace: "1Invalid.Namespace");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1001");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0001");
     }
 
     [Fact]
-    public void Btbp1002InvalidClassNameEmitsDiagnostic()
+    public void Btbp0002InvalidClassNameEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=string:abc", className: "1Invalid");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1002");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0002");
     }
 
+    // ------------------------------------------------------------
+    // Entry (01xx)
+    // ------------------------------------------------------------
+
     [Fact]
-    public void Btbp1003NameSeparatorMissingEmitsDiagnostic()
+    public void Btbp0101NameSeparatorMissingEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("NoSeparator");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1003");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0101");
     }
 
     [Fact]
-    public void Btbp1004TypeSeparatorMissingEmitsDiagnostic()
+    public void Btbp0102TypeSeparatorMissingEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=abc");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1004");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0102");
     }
 
     [Fact]
-    public void Btbp1005InvalidConstNameEmitsDiagnostic()
+    public void Btbp0103InvalidConstNameEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("1Value=string:abc");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1005");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0103");
     }
 
     [Fact]
-    public void Btbp1006UnsupportedTypeEmitsDiagnostic()
+    public void Btbp0104UnsupportedTypeEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=DateTime:2026-01-01");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1006");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0104");
     }
 
     [Fact]
-    public void Btbp1007EmptyValueEmitsDiagnostic()
+    public void Btbp0105EmptyValueEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=int:");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1007");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0105");
     }
 
     [Fact]
-    public void Btbp1008InvalidValueEmitsDiagnostic()
+    public void Btbp0106InvalidValueEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=int:notanumber");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1008");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0106");
     }
 
     [Fact]
-    public void Btbp1009DuplicateNameEmitsDiagnostic()
+    public void Btbp0107DuplicateNameEmitsDiagnostic()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=string:abc,Value1=string:xyz");
 
-        Assert.Contains(diagnostics, static x => x.Id == "BTBP1009");
+        Assert.Contains(diagnostics, static x => x.Id == "BTBP0107");
     }
+
+    // ------------------------------------------------------------
+    // Reporting
+    // ------------------------------------------------------------
 
     [Fact]
     public void SameDiagnosticIsReportedOnce()
     {
         var diagnostics = GeneratorTestHelper.GetDiagnostics("Value1=int:notanumber,Value1=int:notanumber");
 
-        Assert.Single(diagnostics, static x => x.Id == "BTBP1008");
+        Assert.Single(diagnostics, static x => x.Id == "BTBP0106");
     }
 
     [Fact]

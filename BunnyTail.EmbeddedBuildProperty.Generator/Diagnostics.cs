@@ -6,10 +6,10 @@ using SourceGenerateHelper;
 
 internal static class Diagnostics
 {
-    // Class
+    // Class (00xx)
 
     public static DiagnosticDescriptor InvalidNamespace { get; } = new(
-        id: "BTBP1001",
+        id: "BTBP0001",
         title: "Invalid namespace",
         messageFormat: "Namespace is not valid. namespace=[{0}]",
         category: "Usage",
@@ -18,7 +18,7 @@ internal static class Diagnostics
         customTags: DiagnosticTags.NotSuppressible);
 
     public static DiagnosticDescriptor InvalidClassName { get; } = new(
-        id: "BTBP1002",
+        id: "BTBP0002",
         title: "Invalid class name",
         messageFormat: "Class name is not a valid identifier. className=[{0}]",
         category: "Usage",
@@ -26,10 +26,10 @@ internal static class Diagnostics
         isEnabledByDefault: true,
         customTags: DiagnosticTags.NotSuppressible);
 
-    // Entry
+    // Entry (01xx)
 
     public static DiagnosticDescriptor NameSeparatorNotFound { get; } = new(
-        id: "BTBP1003",
+        id: "BTBP0101",
         title: "Name separator not found",
         messageFormat: "Name separator '=' is not found. entry=[{0}]",
         category: "Usage",
@@ -37,7 +37,7 @@ internal static class Diagnostics
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor TypeSeparatorNotFound { get; } = new(
-        id: "BTBP1004",
+        id: "BTBP0102",
         title: "Type separator not found",
         messageFormat: "Type separator ':' is not found. entry=[{0}]",
         category: "Usage",
@@ -45,7 +45,7 @@ internal static class Diagnostics
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor InvalidConstName { get; } = new(
-        id: "BTBP1005",
+        id: "BTBP0103",
         title: "Invalid const name",
         messageFormat: "Const name is not a valid identifier. name=[{0}]",
         category: "Usage",
@@ -53,7 +53,7 @@ internal static class Diagnostics
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor UnsupportedConstType { get; } = new(
-        id: "BTBP1006",
+        id: "BTBP0104",
         title: "Unsupported const type",
         messageFormat: "Const type is not supported. type=[{0}], name=[{1}]",
         category: "Usage",
@@ -61,7 +61,7 @@ internal static class Diagnostics
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor EmptyConstValue { get; } = new(
-        id: "BTBP1007",
+        id: "BTBP0105",
         title: "Empty const value",
         messageFormat: "Value for a non-string const is empty. name=[{0}], type=[{1}]",
         category: "Usage",
@@ -69,7 +69,7 @@ internal static class Diagnostics
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor InvalidConstValue { get; } = new(
-        id: "BTBP1008",
+        id: "BTBP0106",
         title: "Invalid const value",
         messageFormat: "Const value is not valid for the type. name=[{0}], type=[{1}], value=[{2}]",
         category: "Usage",
@@ -77,7 +77,7 @@ internal static class Diagnostics
         isEnabledByDefault: true);
 
     public static DiagnosticDescriptor DuplicateConstName { get; } = new(
-        id: "BTBP1009",
+        id: "BTBP0107",
         title: "Duplicate const name",
         messageFormat: "Const name is duplicated. name=[{0}]",
         category: "Usage",
