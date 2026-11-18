@@ -5,7 +5,6 @@
     <IsRoslynComponent>true</IsRoslynComponent>
     <DebugType>embedded</DebugType>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>
